@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="simple-peer-wrapper.min.js"></script>
+  </head>
+  <body>
+    <script src="paint-erase-controls.js"></script>
+    <script src="multiplayer-controls.js"></script>
+    <a-scene background="color: blue">
+      <!-- Add your entities here -->
+      <a-sphere id="peer-left" color="yellow" radius="0.05"></a-sphere>
+      <a-sphere id="peer-right" color="yellow" radius="0.05"></a-sphere>
+      <a-sphere
+        id="paint-sphere"
+        radius="50"
+        material="src: #canvas-texture; side: double; alphaTest: 0.5; transparent: true"
+        position="0 0 0"
+      ></a-sphere>
+      <canvas id="canvas-texture" style="display: none"></canvas>
+      <a-entity multiplayer-controls></a-entity>
+      <a-entity
+        id="left-hand"
+        laser-controls="hand: left"
+        raycaster="objects: #paint-sphere"
+        paint-erase-controls
+      ></a-entity>
+      <a-entity
+        id="right-hand"
+        laser-controls="hand: right"
+        raycaster="objects: #paint-sphere; showLine: false; lineOpacity: 0"
+        paint-erase-controls
+      >
+        <a-entity id="corrector" rotation="180 0 0">
+          <a-torus
+            id="reticle"
+            color="#43A367"
+            arc="360"
+            radius="0.6"
+            radius-tubular="0.05"
+            position="-0.02 -0.01 20"
+            material="shader: flat"
+          ></a-torus>
+        </a-entity>
+      </a-entity>
+      <a-box
+        id="checkers"
+        color="gray"
+        material="side: double; src: url(https://cdn.glitch.global/e4b49980-841f-4c07-8e1a-64ff90be60f7/checkerboard-2.png?v=1678731290898)"
+        scale="100 100 100"
+      ></a-box>
+    </a-scene>
+    <div style="position: fixed; left: 10px; top: 10px">
+      <button id="start-button">start</button>
+      <input type="text" id="session-id" />
+    </div>
+  </body>
+</html>
