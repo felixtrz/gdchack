@@ -35,7 +35,6 @@ AFRAME.registerComponent("multiplayer-controls", {
   init: function () {
     const startButton = document.getElementById("start-button");
     const sessionIdBox = document.getElementById("session-id");
-    const peerLeft = document.getElementById("peer-left");
     const peerRight = document.getElementById("peer-right");
     const onConnect = (isHost) => {
       console.log(isHost, "connected");
@@ -50,8 +49,13 @@ AFRAME.registerComponent("multiplayer-controls", {
 
     const onData = (payload) => {
       const data = JSON.parse(payload.data);
-      peerLeft.object3D.position.fromArray(data.left);
-      peerRight.object3D.position.fromArray(data.right);
+      peerRight.object3D.position.fromArray(data.position);
+      peerRight.object3D.quaternion.fromArray(data.quaternion);
+      peerRight.setAttribute("painting", data.painting);
+      peerRight.setAttribute("erasing", data.erasing);
+      peerRight.setAttribute("brushSize", data.brushSize);
+      peerRight.setAttribute("eraseSize", data.eraseSize);
+      peerRight.setAttribute("intersection", data.intersection);
     };
 
     startButton.onclick = () => {
@@ -85,13 +89,17 @@ AFRAME.registerComponent("multiplayer-controls", {
 
   tick: function () {
     if (this.spw) {
-      const leftHand = document.getElementById("left-hand");
       const rightHand = document.getElementById("right-hand");
+
       const data = {
-        left: leftHand.object3D.position.toArray(),
-        right: rightHand.object3D.position.toArray(),
+        position: rightHand.object3D.position.toArray(),
+        quaternion: rightHand.object3D.quaternion.toArray(),
+        painting: rightHand.getAttribute("painting"),
+        erasing: rightHand.getAttribute("erasing"),
+        brushSize: rightHand.getAttribute("brushSize"),
+        eraseSize: rightHand.getAttribute("eraseSize"),
+        intersection: rightHand.getAttribute("intersection"),
       };
-      console.log(JSON.stringify(data));
       this.spw.send(JSON.stringify(data));
     }
   },

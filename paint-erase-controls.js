@@ -43,6 +43,8 @@ AFRAME.registerComponent("paint-erase-controls", {
     this.el.addEventListener("gripup", () => {
       this.erasing = false;
     });
+
+    this.peerRight = document.getElementById("peer-right");
   },
 
   tick: function () {
@@ -59,11 +61,35 @@ AFRAME.registerComponent("paint-erase-controls", {
     } else if (this.erasing) {
       this.erase();
     }
+
+    this.el.setAttribute("painting", this.painting);
+    this.el.setAttribute("erasing", this.erasing);
+    this.el.setAttribute("brushSize", this.data.brushSize);
+    this.el.setAttribute("eraseSize", this.data.eraseSize);
+    this.el.setAttribute("intersection", this.intersection.uv.toArray());
+
+    const peerUV = this.peerRight.getAttribute("intersection")?.split(",");
+    const peerPainting = this.peerRight.getAttribute("painting");
+    if (peerUV) {
+      this.paintUV({ x: peerUV[0], y: peerUV[1] });
+    }
   },
 
   paint: function () {
     const uv = this.intersection.uv;
 
+    const x = Math.floor(uv.x * this.canvas.width);
+    const y = Math.floor((1 - uv.y) * this.canvas.height);
+
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, this.data.brushSize, 0, 2 * Math.PI, false);
+    this.ctx.fillStyle = this.data.color;
+    this.ctx.fill();
+
+    this.texture.needsUpdate = true;
+  },
+
+  paintUV: function (uv) {
     const x = Math.floor(uv.x * this.canvas.width);
     const y = Math.floor((1 - uv.y) * this.canvas.height);
 

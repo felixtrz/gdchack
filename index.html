@@ -9,8 +9,12 @@
     <script src="multiplayer-controls.js"></script>
     <a-scene background="color: blue">
       <!-- Add your entities here -->
-      <a-sphere id="peer-left" color="yellow" radius="0.05"></a-sphere>
-      <a-sphere id="peer-right" color="yellow" radius="0.05"></a-sphere>
+      <a-sphere
+        id="peer-right"
+        color="yellow"
+        radius="0.05"
+        raycaster="objects: #paint-sphere; showLine: false; lineOpacity: 0"
+      ></a-sphere>
       <a-sphere
         id="paint-sphere"
         radius="50"
